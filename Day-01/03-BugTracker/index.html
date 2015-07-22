@@ -60,8 +60,12 @@
                 }).length;
             };
             $scope.removeClosed = function(){
-                //fill in the blanks;
-            }
+                for(var i=$scope.bugs.length-1; i>=0; i--){
+                    if ($scope.bugs[i].isClosed){
+                        $scope.bugs.splice(i,1);
+                    }
+                }
+            };
         });
     </script>
 </head>
@@ -76,7 +80,7 @@
             <label for="">Bug :</label>
             <input type="text" ng-model="newBug" name="" id="">
             <input type="button" value="Add New" ng-click="addNew()">
-            <input type="button" value="Remove Closed">
+            <input type="button" value="Remove Closed" ng-click="removeClosed()">
             <ol>
                 <li
                     ng-repeat="bug in bugs track by $index"
