@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script>
+    function MathCalculator(){
+        this.number1 = 0;
+        this.number2 = 0;
+        this.result = 0;
+    }
+    MathCalculator.prototype.add = function(){
+        this.result = parseInt(this.number1,10) + parseInt(this.number2, 10);
+    };
+    MathCalculator.prototype.subtract = function(){
+        this.result = parseInt(this.number1,10) - parseInt(this.number2, 10);
+    };
+    MathCalculator.prototype.multiply = function(){
+        this.result = parseInt(this.number1,10) * parseInt(this.number2, 10);
+    };
+    MathCalculator.prototype.divide = function(){
+        this.result = parseInt(this.number1,10) / parseInt(this.number2, 10);
+    };
+    </script>
+    <script src="jquery-1.11.3.js"></script>
+    <script src="angular.js"></script>
+
+    <script>
+        angular.module("myApp", [])
+        .run(function($rootScope){
+            $rootScope.calculator= new MathCalculator();
+        });
+    </script>
+</head>
+<body ng-app="myApp">
+    <input type="text" name="" id="" ng-model="calculator.number1">
+    <input type="text" name="" id="" ng-model="calculator.number2">
+    <input type="button" value="Add" ng-click="calculator.add()">
+    <input type="button" value="Subtract" ng-click="calculator.subtract()">
+    <input type="button" value="Multiply" ng-click="calculator.multiply()">
+    <input type="button" value="Divide" ng-click="calculator.divide()">
+    <div ng-bind="calculator.result"></div>
+</body>
+</html>

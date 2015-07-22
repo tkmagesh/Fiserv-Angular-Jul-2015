@@ -35,69 +35,16 @@
         this.salary = net;
     }
     </script>
+    <script src="myFramework.js"></script>
     <script>
     //View
     $(document).ready(function(){
         //create a scope object
         angular.bootstrap(document.body, []);
         window.scope = angular.element(document.body).scope();
-        
-        
+
         scope.calculator = new SalaryCalculator();
-        
-        $("#txtBasic").change(function(){
-            var self = this;
-            scope.$apply(function(){
-                scope.calculator.basic = self.value.toInt();
-            });
-        });
-        scope.$watch("calculator.basic", function(newValue, oldValue){
-            $("#txtBasic").val(newValue);
-        });
-        
-        $("#txtHra").change(function(){
-            var self = this;
-            scope.$apply(function(){
-                scope.calculator.hra = self.value.toInt();
-            });
-        });
-        scope.$watch("calculator.hra", function(newValue, oldValue){
-            $("#txtHra").val(newValue);
-        });
-        
-        $("#txtDa").change(function(){
-            var self = this;
-            scope.$apply(function(){
-                scope.calculator.da = self.value.toInt();
-            });
-        });
-        scope.$watch("calculator.da", function(newValue, oldValue){
-            $("#txtDa").val(newValue);
-        });
-        
-        $("#rangeTax").change(function(){
-            var self = this;
-            scope.$apply(function(){
-                scope.calculator.tax = self.value.toInt();
-            });
-        });
-        scope.$watch("calculator.tax", function(newValue, oldValue){
-            $("#rangeTax").val(newValue);
-        });
-        
-        $("#btnCalculate").click(function(){
-            scope.$apply(function(){
-                scope.calculator.calculate();
-            });
-        });
-        
-        scope.$watch("calculator.tax", function(newValue, oldValue){
-            $("#spanTax").html(newValue);
-        });
-        
-        scope.$watch("calculator.salary", function(newValue, oldValue){
-            $("#divResult").html(newValue);
-        });
+        myFramework.init(scope);
     });
     </script>
 </head>
@@ -106,26 +53,26 @@
     <div class="content">
         <div class="field">
             <label for="">Basic :</label>
-            <input type="text" name="" id="txtBasic">
+            <input type="text" name="" id="txtBasic" app-model="calculator.basic">
         </div>
         <div class="field">
             <label for="">HRA :</label>
-            <input type="text" name="" id="txtHra">
+            <input type="text" name="" id="txtHra" app-model="calculator.hra">
         </div>
         <div class="field">
             <label for="">DA :</label>
-            <input type="text" name="" id="txtDa">
+            <input type="text" name="" id="txtDa" app-model="calculator.da">
         </div>
         <div class="field">
             <label for="">Tax :</label>
-            <input type="range" name="" id="rangeTax" min="0" max="30">
-            <span id="spanTax">[Tax %]</span>
+            <input type="range" name="" id="rangeTax" min="0" max="30" app-model="calculator.tax">
+            <span id="spanTax" app-bind="calculator.tax">[Tax %]</span>
         </div>
         <div class="field">
-            <input type="button" value="Calculate" id="btnCalculate">
+            <input type="button" value="Calculate" id="btnCalculate" app-click="calculator.calculate()">
         </div>
         <div class="field">
-            <div id="divResult">[Salary]</div>
+            <div id="divResult" app-bind="calculator.salary">[Salary]</div>
         </div>
     </div>
 </body>
