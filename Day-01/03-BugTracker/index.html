@@ -51,6 +51,17 @@
                 };
                 $scope.bugs.push(newBug);
             };
+            $scope.toggle = function(bug){
+                bug.isClosed = !bug.isClosed;
+            };
+            $scope.getClosedCount = function(){
+                return $scope.bugs.filter(function(bug){
+                    return bug.isClosed;
+                }).length;
+            };
+            $scope.removeClosed = function(){
+                //fill in the blanks;
+            }
         });
     </script>
 </head>
@@ -58,7 +69,7 @@
     <h1>Bug Tracker</h1>
     <div class="content" ng-controller="bugsController">
         <div class="stats">
-            <span class="closed">3</span> / <span>{{bugs.length}}</span>
+            <span class="closed">{{getClosedCount()}}</span> / <span>{{bugs.length}}</span>
         </div>
         <div class="search"></div>
         <div class="list">
@@ -67,7 +78,11 @@
             <input type="button" value="Add New" ng-click="addNew()">
             <input type="button" value="Remove Closed">
             <ol>
-                <li ng-repeat="bug in bugs track by $index">{{bug}}</li>
+                <li
+                    ng-repeat="bug in bugs track by $index"
+                    ng-click="toggle(bug)"
+                    ng-class="{closed : bug.isClosed}"
+                >{{bug}}</li>
             </ol>
         </div>
     </div>
