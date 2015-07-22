@@ -27,7 +27,8 @@
 
     <script>
         angular.module("myApp", [])
-        .run(function($rootScope){
+        .run(function($rootScope, $http, $q, $parse, $compile){
+            console.log(arguments.length);
             $rootScope.calculator= new MathCalculator();
         });
     </script>
