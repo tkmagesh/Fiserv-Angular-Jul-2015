@@ -1,0 +1,15 @@
+{
+  "name": "BugTracker-Server",
+  "version": "0.1.0",
+  "description": "test app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "json-server bugs.json -p 4444"
+  },
+  "author": "Magesh K",
+  "license": "ISC",
+  "devDependencies": {
+    "json-server": "^0.7.23"
+  }
+}
