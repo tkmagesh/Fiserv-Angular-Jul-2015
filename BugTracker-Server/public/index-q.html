@@ -59,7 +59,7 @@
             return Bug;
         });
 
-        bugTrackerApp.factory("bugService", function($http, Bug, $q){
+        /*bugTrackerApp.factory("bugService", function($http, Bug, $q){
             return {
                 getAll : function(){
                     var deferred = $q.defer();
@@ -75,7 +75,23 @@
                     return deferred.promise;
                 }
             }
-        })
+        })*/
+
+        bugTrackerApp.service("bugService", function($http, Bug, $q){
+            this.getAll = function(){
+                    var deferred = $q.defer();
+
+                    $http.get("http://localhost:4444/bugs")
+                        .then(function(response){
+                            var result = response.data.map(function(bugData){
+                                return new Bug(bugData);
+                            });
+                            console.log("returning result");
+                            deferred.resolve(result);
+                        });
+                    return deferred.promise;
+                }
+        });
 
 
 

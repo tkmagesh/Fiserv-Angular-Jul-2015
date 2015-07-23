@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="angular.js"></script>
+    <script src="angular-route.js"></script>
+    <script>
+        var myApp = angular.module("myApp",["ngRoute"]);
+
+        myApp.config(function($routeProvider){
+            $routeProvider
+                .when("/products", {
+                    //template : "<h3>Products</h3>"
+                    templateUrl : 'templates/productsTemplate.html',
+                    controller : 'productsController'
+                })
+                .when("/customers",{
+                    //template : "<h3>Customers</h3>"
+                    templateUrl : 'templates/customersTemplate.html'
+                })
+                .when('/product/:pid', {
+                    templateUrl : 'templates/productInfoTemplate.html',
+                    controller : 'productInfoController'
+                })
+                .otherwise({
+                    redirectTo : "/products"
+                });
+        })
+
+        .service("productsService", function(){
+            this.getAll = function(){
+                return [
+                    {id : 1, name : "Hen", cost : 100, units : 67, desc : ''},
+                    {id : 2, name : "Ten", cost : 200, units : 78, desc : ''},
+                    {id : 3, name : "Den", cost : 300, units : 23, desc : ''},
+                    {id : 4, name : "Zen", cost : 400, units : 45, desc : ''},
+                ]
+            }
+        })
+        .controller("productsController", function(productsService, $scope){
+            $scope.products = productsService.getAll();
+        })
+        .controller('productInfoController', function($scope, productsService, $routeParams){
+            var productId = parseInt($routeParams.pid);
+            $scope.product = productsService.getAll().filter(function(p){
+                return p.id === productId
+            })[0];
+        });
+
+    </script>
+</head>
+<body ng-app="myApp">
+    <h1>Routing App</h1>
+    <hr>
+    <div ng-view></div>
+</body>
+</html>
