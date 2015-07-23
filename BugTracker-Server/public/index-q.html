@@ -59,20 +59,20 @@
             return Bug;
         });
 
-        bugTrackerApp.factory("bugService", function($http, Bug){
+        bugTrackerApp.factory("bugService", function($http, Bug, $q){
             return {
                 getAll : function(){
-                    var promise = new Promise(function(resolve, reject){
-                        $http.get("http://localhost:4444/bugs")
-                            .then(function(response){
-                                var result = response.data.map(function(bugData){
-                                    return new Bug(bugData);
-                                });
-                                console.log("returning result");
-                                resolve(result);
+                    var deferred = $q.defer();
+
+                    $http.get("http://localhost:4444/bugs")
+                        .then(function(response){
+                            var result = response.data.map(function(bugData){
+                                return new Bug(bugData);
                             });
-                    });
-                    return promise;
+                            console.log("returning result");
+                            deferred.resolve(result);
+                        });
+                    return deferred.promise;
                 }
             }
         })
@@ -85,10 +85,8 @@
             $scope.bugs = [];
 
             bugService.getAll().then(function(bugs){
-                $scope.$apply(function(){
-                    console.log("bugs from service = ", bugs);
-                    $scope.bugs = bugs;
-                });
+                console.log("bugs from service = ", bugs);
+                $scope.bugs = bugs;
             });
 
 
