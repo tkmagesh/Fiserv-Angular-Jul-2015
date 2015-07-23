@@ -21,8 +21,8 @@
     /*
     Use Cases
     ==========
-    1. List the bugs
-    2. Add a new bug
+    1. List the bugs - done
+    2. Add a new bug - done
     3. Toggle the completion status of the bug
     4. Remove Closed Bugs
     5. Display stats
@@ -36,23 +36,65 @@
     </script>
     <script src="angular.js"></script>
     <script>
+
+
+
         var bugTrackerApp = angular.module("bugTrackerApp", []);
-        bugTrackerApp.controller("bugsController", function($scope){
+
+       /* bugTrackerApp.value("Bug", function Bug(defaults){
+            defaults = defaults || {};
+            this.name = defaults.name || '';
+            this.isClosed = defaults.isClosed || false;
+            this.toggle =function(){
+                this.isClosed = !this.isClosed;
+            };
+        });*/
+
+        bugTrackerApp.value("bugDefaults", {
+            name : '',
+            isClosed : true
+        });
+
+        bugTrackerApp.factory("Bug", function getBugClass(bugDefaults){
+
+            function Bug(defaults){
+                this.name = defaults.name || bugDefaults.name;
+                this.isClosed = (typeof defaults.isClosed === "undefined" ? bugDefaults.isClosed : defaults.isClosed);
+            }
+            Bug.prototype.toggle = function(){
+                this.isClosed = !this.isClosed;
+            };
+            return Bug;
+        });
+
+
+
+
+        bugTrackerApp.controller("bugsController", function($scope, Bug){
             $scope.newBug = 'Enter the new bug';
             $scope.bugs = [
-                { name : 'index out of range', isClosed : false},
-                { name : 'stack overflow error', isClosed : false},
-                { name : 'object reference not set to an instance of an object', isClosed : false}
+                new Bug({
+                    name : 'index out of range',
+                    isClosed : false
+                }),
+                new Bug({
+                    name : 'stack overflow error',
+                    isClosed : false
+                }),
+                new Bug({
+                    name : 'object reference not set to an instance of an object',
+                    isClosed : false
+                })
             ];
             $scope.addNew = function(){
-                var newBug = {
-                    name : $scope.newBug,
-                    isClosed : false
-                };
+                var newBug = new Bug({
+                    name : $scope.newBug
+                });
                 $scope.bugs.push(newBug);
             };
             $scope.toggle = function(bug){
-                bug.isClosed = !bug.isClosed;
+                //bug.isClosed = !bug.isClosed;
+                bug.toggle();
             };
             $scope.getClosedCount = function(){
                 return $scope.bugs.filter(function(bug){
@@ -69,7 +111,7 @@
         });
     </script>
 </head>
-<body ng-app="bugTrackerApp">
+<body ng-app="bugTrackerApp" >
     <h1>Bug Tracker</h1>
     <div class="content" ng-controller="bugsController">
         <div class="stats">
