@@ -3,43 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Bug Tracker</title>
-    <style>
-        .closed {
-            color : red;
-            text-decoration: line-through;
-            font-weight: bold;
-            font-style: italic;
-        }
-        li{
-            cursor: pointer;
-        }
-        div{
-            margin-bottom: 5px;
-        }
-        .bugsList {
-                    width: 60%;
-                    list-style: none;
-                }
-                .bugsList li{
-                    margin-bottom: 5px;
-
-                }
-                .bug {
-                        border : 2px solid gray;
-                        background-color: lightgray;
-                    border-radius: 5px;
-                    padding: 5px;
-                }
-                .bug .name {
-                    display: block;
-                    font-size: 18pt;
-                    font-weight: bold;
-                    margin-bottom: 2px;
-                }
-                .bug .timeStamp{
-                     font-style: italic;
-                }
-    </style>
+    <link rel="stylesheet" href="style.css">
     <script>
     /*
     Use Cases
@@ -75,6 +39,7 @@
         });*/
 
         bugTrackerApp.value("bugDefaults", {
+            id : 0,
             name : '',
             isClosed : true,
             createdAt : new Date()
@@ -83,6 +48,7 @@
         bugTrackerApp.factory("Bug", function getBugClass(bugDefaults){
 
             function Bug(defaults){
+                this.id = defaults.id || bugDefaults.id;
                 this.name = defaults.name || bugDefaults.name;
                 this.isClosed = (typeof defaults.isClosed === "undefined" ? bugDefaults.isClosed : defaults.isClosed);
                 this.createdAt = defaults.createdAt || bugDefaults.createdAt;
@@ -96,39 +62,37 @@
 
 
 
-        bugTrackerApp.controller("bugsController", function($scope, Bug){
+        bugTrackerApp.controller("bugsController", function($scope, Bug, $http){
             $scope.newBug = 'Enter the new bug';
-            $scope.bugs = [
-                new Bug({
-                    name : 'index out of range',
-                    isClosed : false,
-                    createdAt : new Date(2015, 5, 10)
-                }),
-                new Bug({
-                    name : 'stack overflow error',
-                    isClosed : false,
-                    createdAt : new Date(2015, 6, 20)
-                }),
-                new Bug({
-                    name : 'object reference not set to an instance of an object',
-                    isClosed : false,
-                    createdAt : new Date(2015, 6, 23, 11, 0, 0)
-                })
-            ];
+
+            $scope.bugs = [];
+            $http.get("http://localhost:4444/bugs")
+                .then(function(response){
+                    $scope.bugs = response.data.map(function(bugData){
+                        return new Bug(bugData);
+                    });
+                });
+
             $scope.addNew = function(){
                 var newBug = new Bug({
                     name : $scope.newBug
                 });
-                $scope.bugs.push(newBug);
+                $http.post("http://localhost:4444/bugs", newBug)
+                    .then(function(response){
+                        $scope.bugs.push(new Bug(response.data));
+                    });
             };
             $scope.toggle = function(bug){
                 //bug.isClosed = !bug.isClosed;
                 bug.toggle();
+                $http.put("http://localhost:4444/bugs/" + bug.id, bug);
             };
 
             $scope.removeClosed = function(){
                 for(var i=$scope.bugs.length-1; i>=0; i--){
                     if ($scope.bugs[i].isClosed){
+                        var bug = $scope.bugs[i];
+                        $http.delete("http://localhost:4444/bugs/" + bug.id);
                         $scope.bugs.splice(i,1);
                     }
                 }
